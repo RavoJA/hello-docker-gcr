@@ -23,7 +23,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-
     - id: 'auth'
       uses: 'google-github-actions/auth@v2'
       with:
@@ -34,4 +33,21 @@ jobs:
 
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
+
+    - name: Configurer Docker pour GCR
+      run: gcloud auth configure-docker europe-west1-docker.pkg.dev 
+
+    - name: "Construire l'image Docker"
+      run: |
+          IMAGE_NAME=gcr.io/${{secrets.GCP_PROJECT_ID}}/hello-world
+          TAG=$(git rev-parse --short HEAD)
+          docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest .
+
+    - name: Pousser l'image vers GCR
+      run: |
+          IMAGE_NAME=gcr.io/${{secrets.GCP_PROJECT_ID}}/mon-app
+          TAG=$(git rev-parse --short HEAD)
+          docker push $IMAGE_NAME:$TAG
+          docker push $IMAGE_NAME:latest
+      
       
