@@ -45,7 +45,7 @@ jobs:
 
     - name: Pousser l'image vers GCR
       run: |
-          IMAGE_NAME=gcr.io/${{secrets.GCP_PROJECT_ID}}/mon-app
+          IMAGE_NAME=gcr.io/${{secrets.GCP_PROJECT_ID}}/hello-world
           TAG=$(git rev-parse --short HEAD)
           docker push $IMAGE_NAME:$TAG
           docker push $IMAGE_NAME:latest
